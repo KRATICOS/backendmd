@@ -1,11 +1,10 @@
-require('dotenv').config();
+// app.js
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 
 const app = express();
 
@@ -13,7 +12,7 @@ const app = express();
 // Middleware
 // =======================
 
-// CORS abierto: permite cualquier origen, todos los métodos y headers
+// CORS abierto: permite acceso desde cualquier origen, todos los métodos y headers
 app.use(cors({
   origin: '*',
   methods: ['GET','POST','PUT','DELETE','OPTIONS','PATCH'],
@@ -64,28 +63,9 @@ app.use('/api/inventario', verifyToken, inventarioRoutes);
 app.use('/api/historial', verifyToken, historialRoutes);
 app.use('/api/categorias', verifyToken, categoriaRoutes);
 
-// Ruta de prueba
+// Ruta de prueba para verificar conexión desde cualquier dispositivo
 app.get('/api/test', (req, res) => {
   res.json({ mensaje: '✅ Conexión exitosa con la API desde Internet' });
 });
 
-// =======================
-// Conexión a MongoDB Atlas
-// =======================
-const PORT = process.env.PORT || 5000;
-const DB_URL = process.env.DB_URL; // MongoDB Atlas URI en tu .env
-
-mongoose.connect(DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => {
-  console.log('✅ Conectado a MongoDB Atlas');
-  // Iniciar servidor escuchando en todas las interfaces
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en puerto ${PORT} y escuchando en todas las interfaces`);
-  });
-})
-.catch(err => {
-  console.error('❌ Error al conectar a MongoDB Atlas:', err);
-});
+module.exports = app;
