@@ -36,7 +36,7 @@ exports.createUser = async (req, res) => {
         }
 
         const imagenes = files.map(file => ({
-            url: `https://localhost:3001/uploads/${file.filename}`
+            url: `https://mdbackend-ys7z.onrender.com/uploads/${file.filename}`
         }));
 
         const newUser = new Usuario({
@@ -73,7 +73,7 @@ exports.updateUser = async (req, res) => {
 
         if (req.files && req.files.length > 0) {
             const imagenes = req.files.map(file => ({
-                url: `https://localhost:3001/uploads/${file.filename}`
+                url: `https://mdbackend-ys7z.onrender.com/uploads/${file.filename}`
             }));
             fieldsToUpdate.imagenes = imagenes;
         }

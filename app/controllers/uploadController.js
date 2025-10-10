@@ -10,7 +10,7 @@ exports.subirArchivos = (req, res) => {
 
     const archivos = req.files.map(file => ({
         filename: file.filename,
-        url: `https://localhost:3001/uploads/${file}`
+        url: `https://mdbackend-ys7z.onrender.com/uploads/${file.filename}`
     }));
 
     res.json({

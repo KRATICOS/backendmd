@@ -1,5 +1,4 @@
 const Inventario = require('../models/inventario');
-const upload = require('../../config/multerConfig');
 
 
 const Estados = ['Disponible', 'Ocupado', 'En Mantenimiento'];
@@ -16,7 +15,7 @@ exports.registrarEquipoConImagenes = async (req, res) => {
         }
 
         const imagenes = files.map(file => ({
-            url: `https://localhost:3001/uploads/${file.filename}`
+            url: `https://mdbackend-ys7z.onrender.com/uploads/${file.filename}`
         }));
 
         const nuevoEquipo = new Inventario({
@@ -107,7 +106,7 @@ exports.actualizarEquipoConImagenes = async (req, res) => {
 
     if (files.length > 0) {
       const nuevasImagenes = files.map(file => ({
-        url: `https://localhost:3001/uploads/${file.filename}`
+        url: `https://mdbackend-ys7z.onrender.com/uploads/${file.filename}`
       }));
       equipo.imagenes = equipo.imagenes.concat(nuevasImagenes);
     }
