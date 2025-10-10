@@ -57,7 +57,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', uploadRoutes);
 
 // Rutas protegidas opcionales
-app.use('/api/usuarios', verifyToken, usuarioRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/items', verifyToken, itemsRoutes);
 app.use('/api/inventario', verifyToken, inventarioRoutes);
 app.use('/api/historial', verifyToken, historialRoutes);
