@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const app = require("./app");
 
 // Variables de entorno
-const DB_URL =
-  process.env.DB_URL || "mongodb://localhost:27017/materials-dispenser";
+const DB_URL = process.env.DB_URL || "mongodb://localhost:27017/materials-dispenser";
 const PORT = process.env.PORT || 5000;
 
 // Conexión a MongoDB
@@ -18,12 +17,11 @@ mongoose
 
 // Ruta de prueba para verificar servidor
 app.get("/", (req, res) => {
-  res.send("Servidor Node + Express funcionando 🚀");
+  res.send("🚀 API pública funcionando correctamente en Render");
 });
 
 // Inicializar servidor
-// "0.0.0.0" permite que se acceda desde cualquier dispositivo en la misma red
+// "0.0.0.0" permite acceso desde cualquier red o dispositivo (Internet, móvil, etc.)
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Servidor corriendo en http://0.0.0.0:${PORT}`);
-  console.log(`🌐 Puedes acceder desde tu frontend XAMPP o apps móviles`);
+  console.log(`🌐 Servidor corriendo en el puerto ${PORT}`);
 });
