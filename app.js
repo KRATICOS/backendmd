@@ -32,6 +32,9 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Carpeta de uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 // =======================
 // Middleware de token opcional
 // =======================
