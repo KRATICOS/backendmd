@@ -69,7 +69,7 @@ app.use('/api/inventario', (req, res, next) => {
   }
   verifyToken(req, res, next); // Protege POST, PUT, DELETE, etc.
 }, inventarioRoutes);app.use('/api/historial', verifyToken, historialRoutes);
-app.use('/api/categorias', verifyToken, categoriaRoutes);
+app.use('/api/categorias', categoriaRoutes);
 
 // Ruta de prueba para verificar conexión desde cualquier dispositivo
 app.get('/api/test', (req, res) => {
