@@ -1,41 +1,61 @@
-
-
 const express = require('express');
 const router = express.Router();
 const inventarioController = require('../controllers/inventarioController');
 const upload = require('../../config/multerConfig');
-
-// Middlewares
 const { verificarToken } = require('../middlewares/authMiddleware');
 const { verificarRol } = require('../middlewares/roleMiddleware');
 
-// 🔹 Obtener todos los equipos (solo usuarios logueados)
-router.get('/', verificarToken, inventarioController.obtenerInventario);
+// ==========================
+// 📦 RUTAS DE INVENTARIO (usuarios autenticados)
+// ==========================
 
-// 🔹 Crear un equipo (solo superadministradores)
+// Obtener todos los equipos
+router.get('/', verificarToken, inventarioController.obtenerEquipos);
+
+// Obtener un equipo por ID
+router.get('/:id', verificarToken, inventarioController.obtenerEquipoPorId);
+
+// Obtener por número de serie
+router.get('/por-serie/:nseries', verificarToken, inventarioController.obtenerPorNumeroSerie);
+
+// Buscar por categoría
+router.get('/categoria/:categoria', verificarToken, inventarioController.obtenerPorCategoria);
+
+// Buscar por estado
+router.get('/estado/:estado', verificarToken, inventarioController.obtenerPorEstado);
+
+// Actualizar estado por código QR
+router.put('/qr/:codigoQR', verificarToken, inventarioController.actualizarEstadoPorQR);
+
+
+// ==========================
+// 🛠️ RUTAS SOLO ADMINISTRADORES
+// ==========================
+
+// Crear equipo
 router.post(
   '/crear',
   verificarToken,
-  verificarRol(['superadministrador']), // 👈 Solo este rol puede crear
-  upload.array('imagenes', 5),          // opcional si subes imágenes
-  inventarioController.crearInventario
+  verificarRol(['admin', 'superadmin']), // puedes ajustar roles permitidos
+  upload.any(),
+  inventarioController.registrarEquipoConImagenes
 );
 
-// 🔹 Editar un equipo (solo superadministradores)
+// Actualizar equipo
 router.put(
-  '/editar/:id',
+  '/:id',
   verificarToken,
-  verificarRol(['superadministrador']),
-  upload.array('imagenes', 5),
-  inventarioController.actualizarInventario
+  verificarRol(['admin', 'superadmin']),
+  upload.any(),
+  inventarioController.actualizarEquipoConImagenes
 );
 
-// 🔹 Eliminar un equipo (solo superadministradores)
+// Eliminar equipo
 router.delete(
-  '/eliminar/:id',
+  '/:id',
   verificarToken,
-  verificarRol(['superadministrador']),
-  inventarioController.eliminarInventario
+  verificarRol(['admin', 'superadmin']),
+  inventarioController.eliminarEquipo
 );
 
 module.exports = router;
