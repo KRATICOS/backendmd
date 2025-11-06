@@ -9,4 +9,4 @@ function verificarRol(rolesPermitidos) {
   };
 }
 
-module.exports = verificarRol;
+module.exports = { verificarRol };
