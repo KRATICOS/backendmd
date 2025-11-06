@@ -68,7 +68,8 @@ app.use('/api/inventario', (req, res, next) => {
     return inventarioRoutes(req, res, next); // Permite GET sin token
   }
   verifyToken(req, res, next); // Protege POST, PUT, DELETE, etc.
-}, inventarioRoutes);app.use('/api/historial', verifyToken, historialRoutes);
+}, inventarioRoutes);
+app.use('/api/historial', verifyToken, historialRoutes);
 app.use('/api/categorias', categoriaRoutes);
 
 // Ruta de prueba para verificar conexión desde cualquier dispositivo
