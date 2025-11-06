@@ -3,7 +3,7 @@ const router = express.Router();
 const inventarioController = require('../controllers/inventarioController');
 const upload = require('../../config/multerConfig');
 const authMiddleware = require('../middlewares/authMiddleware');
-const verificarRol = require('../middlewares/roleMiddleware');
+const { verificarRol } = require('../middlewares/roleMiddleware');
 
 // Obtener por número de serie (solo usuarios autenticados)
 router.get('/por-serie/:nseries', authMiddleware, inventarioController.obtenerPorNumeroSerie);
