@@ -63,14 +63,9 @@ app.use('/api', uploadRoutes);
 
 // Rutas protegidas opcionales
 app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/items', verifyToken, itemsRoutes);
-app.use('/api/inventario', (req, res, next) => {
-  if (req.method === 'GET') {
-    return inventarioRoutes(req, res, next); // Permite GET sin token
-  }
-  verifyToken(req, res, next); // Protege POST, PUT, DELETE, etc.
-}, inventarioRoutes);
-app.use('/api/historial', verifyToken, historialRoutes);
+app.use('/api/items', itemsRoutes);
+app.use('/api/inventario', inventarioRoutes);
+app.use('/api/historial', historialRoutes);
 app.use('/api/categorias', categoriaRoutes);
 
 // Ruta de prueba para verificar conexión desde cualquier dispositivo
