@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET || 'NADIEPASAAQUIJAJAJAJAJAJA';
 
-const authMiddleware = (req, res, next) => {
+function verificarToken(req, res, next) {
   const authHeader = req.header('Authorization');
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -15,6 +15,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
 
+    // 🔹 Aseguramos compatibilidad con diferentes estructuras de token
     if (decoded.id && !decoded._id) {
       decoded._id = decoded.id;
     }
@@ -27,15 +28,14 @@ const authMiddleware = (req, res, next) => {
 
     req.user = decoded;
 
-    console.log('Usuario autenticado:', req.user);
-
+    console.log('✅ Usuario autenticado:', req.user);
     next();
   } catch (error) {
-    console.error('Error al verificar token JWT:', error.message);
+    console.error('❌ Error al verificar token JWT:', error.message);
     return res.status(401).json({
       message: 'Token no válido o expirado.'
     });
   }
-};
+}
 
-module.exports = authMiddleware;
+module.exports = { verificarToken };
