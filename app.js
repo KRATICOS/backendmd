@@ -55,7 +55,6 @@ const historialRoutes = require('./app/routes/historialRoutes');
 const inventarioRoutes = require('./app/routes/inventarioRoutes');
 const uploadRoutes = require('./app/routes/uploadRoutes');
 const categoriaRoutes = require('./app/routes/categoriaRoutes');
-const verificarRol = require('../middlewares/roleMiddleware');
 
 
 // Rutas públicas
