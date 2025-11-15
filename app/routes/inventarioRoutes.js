@@ -2,41 +2,38 @@ const express = require('express');
 const router = express.Router();
 const inventarioController = require('../controllers/inventarioController');
 const upload = require('../../config/multerConfig');
-const { verificarToken } = require('../middlewares/authMiddleware');
-const { verificarRol } = require('../middlewares/roleMiddleware');
 
 // ==========================
-// 📦 RUTAS DE INVENTARIO (usuarios autenticados)
+// 📦 RUTAS DE INVENTARIO (públicas)
 // ==========================
 
-// Obtener todos los equipos
-router.get('/', verificarToken, inventarioController.obtenerEquipos);
-
-// Obtener un equipo por ID
-router.get('/:id', verificarToken, inventarioController.obtenerEquipoPorId);
+// Rutas de consulta específicas primero
 
 // Obtener por número de serie
-router.get('/por-serie/:nseries', verificarToken, inventarioController.obtenerPorNumeroSerie);
+router.get('/por-serie/:nseries', inventarioController.obtenerPorNumeroSerie);
 
 // Buscar por categoría
-router.get('/categoria/:categoria', verificarToken, inventarioController.obtenerPorCategoria);
+router.get('/categoria/:categoria', inventarioController.obtenerPorCategoria);
 
 // Buscar por estado
-router.get('/estado/:estado', verificarToken, inventarioController.obtenerPorEstado);
+router.get('/estado/:estado', inventarioController.obtenerPorEstado);
+
+// Obtener todos los equipos
+router.get('/', inventarioController.obtenerEquipos);
+
+// Obtener un equipo por ID (al final para no interferir con rutas anteriores)
+router.get('/:id', inventarioController.obtenerEquipoPorId);
 
 // Actualizar estado por código QR
-router.put('/qr/:codigoQR', verificarToken, inventarioController.actualizarEstadoPorQR);
-
+router.put('/qr/:codigoQR', inventarioController.actualizarEstadoPorQR);
 
 // ==========================
-// 🛠️ RUTAS SOLO ADMINISTRADORES
+// 🛠️ RUTAS DE ADMINISTRACIÓN (ahora públicas también)
 // ==========================
 
 // Crear equipo
 router.post(
   '/crear',
-  verificarToken,
-  verificarRol(['admin', 'superadmin']), // puedes ajustar roles permitidos
   upload.any(),
   inventarioController.registrarEquipoConImagenes
 );
@@ -44,8 +41,6 @@ router.post(
 // Actualizar equipo
 router.put(
   '/:id',
-  verificarToken,
-  verificarRol(['admin', 'superadmin']),
   upload.any(),
   inventarioController.actualizarEquipoConImagenes
 );
@@ -53,8 +48,6 @@ router.put(
 // Eliminar equipo
 router.delete(
   '/:id',
-  verificarToken,
-  verificarRol(['admin', 'superadmin']),
   inventarioController.eliminarEquipo
 );
 
