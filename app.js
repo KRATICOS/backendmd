@@ -2,20 +2,19 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
 const app = express();
 
 // =======================
-// Middleware
+// Middlewares
 // =======================
 
 // CORS abierto: permite acceso desde cualquier origen, todos los métodos y headers
 app.use(cors({
   origin: '*',
-  methods: ['GET','POST','PUT','DELETE','OPTIONS','PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
@@ -25,15 +24,13 @@ app.options('*', cors()); // preflight requests
 app.use(helmet());
 app.use(morgan('dev'));
 
-// Body parser
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+// Body parser integrado en Express (no necesitas body-parser externo)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Carpeta de uploads
+// Carpeta de uploads para servir imágenes
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 // =======================
 // Middleware de token opcional
@@ -43,7 +40,6 @@ const verifyToken = (req, res, next) => {
   if (!authHeader) return res.status(401).json({ message: 'Token no proporcionado' });
   next();
 };
-
 
 // =======================
 // Rutas
@@ -56,10 +52,9 @@ const inventarioRoutes = require('./app/routes/inventarioRoutes');
 const uploadRoutes = require('./app/routes/uploadRoutes');
 const categoriaRoutes = require('./app/routes/categoriaRoutes');
 
-
 // Rutas públicas
 app.use('/api/auth', authRoutes);
-app.use('/api', uploadRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 // Rutas protegidas opcionales
 app.use('/api/usuarios', usuarioRoutes);
@@ -71,6 +66,11 @@ app.use('/api/categorias', categoriaRoutes);
 // Ruta de prueba para verificar conexión desde cualquier dispositivo
 app.get('/api/test', (req, res) => {
   res.json({ mensaje: '✅ Conexión exitosa con la API desde Internet' });
+});
+
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+  res.status(404).json({ message: 'Ruta no encontrada' });
 });
 
 module.exports = app;
