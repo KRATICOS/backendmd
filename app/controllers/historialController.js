@@ -1,5 +1,6 @@
 const Historial  = require('../models/historial');
 const Inventario = require('../models/inventario');
+const { io } = require('../../server'); 
 
 const horaActual = () => new Date().toTimeString().slice(0, 5);
 const horaValida = (h) => /^([01]\d|2[0-3]):[0-5]\d$/.test(h);
@@ -24,7 +25,7 @@ exports.registrarPrestamo = async (req, res) => {
     if (equipo.estado === 'En Mantenimiento')
       return res.status(409).json({ message: 'El equipo está en mantenimiento' });
 
-   
+    // --- PRÉSTAMO INMEDIATO ---
     if (!horaDevolucion) {
       if (equipo.estado === 'Ocupado')
         return res.status(409).json({ message: 'El equipo ya está ocupado' });
@@ -42,10 +43,17 @@ exports.registrarPrestamo = async (req, res) => {
       equipo.estado = 'Ocupado';
       await equipo.save();
 
+      // 🔥 Evento Socket.IO → préstamo inmediato
+      io.emit('equipoSolicitado', {
+        inventarioId,
+        usuarioId,
+        historial: nuevo,
+      });
+
       return res.status(201).json({ message: 'Préstamo inmediato registrado', historial: nuevo });
     }
 
-   
+    // --- RESERVA PROGRAMADA ---
     if (!horaValida(horaSolicitud) || !horaValida(horaDevolucion))
       return res.status(400).json({ message: 'Formato de hora inválido. Use HH:mm' });
 
@@ -70,6 +78,14 @@ exports.registrarPrestamo = async (req, res) => {
     });
 
     await reserva.save();
+
+    // 🔥 Evento Socket.IO → reserva creada
+    io.emit('equipoSolicitado', {
+      inventarioId,
+      usuarioId,
+      historial: reserva,
+    });
+
     return res.status(201).json({ message: 'Reserva registrada', historial: reserva });
 
   } catch (err) {
@@ -98,6 +114,12 @@ exports.registrarDevolucion = async (req, res) => {
       equipo.estado = 'Disponible';
       await equipo.save();
     }
+
+    // 🔥 Evento Socket.IO → devolución
+    io.emit('equipoDevuelto', {
+      inventarioId: historial.inventarioId,
+      historial,
+    });
 
     res.status(200).json({ message: 'Devolución registrada', historial });
   } catch (err) {
